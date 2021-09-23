@@ -11,10 +11,10 @@ class Chart extends StatelessWidget {
   List<Map<String, Object>> get groupedTransactionValues {
     return List.generate(7, (index) {
       final weekDay = DateTime.now().subtract(Duration(days: index));
-      double totalSum;
+      var totalSum = 0.0;
 
       for (var i = 0; i < recentTransactions.length; i++) {
-        bool checkTxDay = recentTransactions[i].date.day == weekDay;
+        bool checkTxDay = recentTransactions[i].date.day == weekDay.day;
         bool checkTxMonth = recentTransactions[i].date.month == weekDay.month;
         bool checkTxYear = recentTransactions[i].date.year == weekDay.year;
 
@@ -23,14 +23,15 @@ class Chart extends StatelessWidget {
         }
       }
 
-      print('WeekDay:${DateFormat.E(weekDay)}\nAmount:$totalSum');
+      print('WeekDay:${DateFormat.E().format(weekDay)}\nAmount:$totalSum');
 
-      return {'day': DateFormat.E(weekDay), 'amount': totalSum};
+      return {'day': DateFormat.E().format(weekDay), 'amount': totalSum};
     });
   }
 
   @override
   Widget build(BuildContext context) {
+    print(groupedTransactionValues);
     return Card(
       elevation: 6,
       margin: EdgeInsets.all(20),
