@@ -44,9 +44,7 @@ class TransactionList extends StatelessWidget {
                       style: Theme.of(context).textTheme.headline6,
                     ),
                     subtitle: Text(
-                      DateFormat.yMMMd()
-                          .add_jm()
-                          .format(transactions[index].date),
+                      DateFormat.yMMMd().format(transactions[index].date),
                     ),
                     trailing: IconButton(
                       icon: Icon(Icons.delete),
