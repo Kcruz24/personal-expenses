@@ -110,6 +110,15 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    double chartHeight = 0.65;
+    double txListHeight = 0.7;
+
+    final isLandscape =
+        MediaQuery.of(context).orientation == Orientation.landscape;
+
+    final isPortrait =
+        MediaQuery.of(context).orientation == Orientation.portrait;
+
     final appBar = AppBar(
       title: Text('Personal Expenses'),
       actions: <Widget>[
@@ -120,15 +129,27 @@ class _MyHomePageState extends State<MyHomePage> {
       ],
     );
 
+    if (isPortrait) chartHeight = 0.3;
+
     final calculateChartHeight = (MediaQuery.of(context).size.height -
             appBar.preferredSize.height -
             MediaQuery.of(context).padding.top) *
-        0.30;
+        chartHeight;
 
     final calculateTransactionListHeight = (MediaQuery.of(context).size.height -
             appBar.preferredSize.height -
             MediaQuery.of(context).padding.top) *
-        0.70;
+        txListHeight;
+
+    final displayTxListWidget = Container(
+      height: calculateTransactionListHeight,
+      child: TransactionList(_userTransactions, _deleteTransaction),
+    );
+
+    final displayChartWidget = Container(
+      height: calculateChartHeight,
+      child: Chart(_recentTransactions),
+    );
 
     return Scaffold(
       appBar: appBar,
@@ -136,30 +157,25 @@ class _MyHomePageState extends State<MyHomePage> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Text('Show Chart'),
-                Switch(
-                  value: _showChart,
-                  onChanged: (value) {
-                    setState(() {
-                      _showChart = value;
-                    });
-                  },
-                ),
-              ],
-            ),
-            _showChart
-                ? Container(
-                    height: calculateChartHeight,
-                    child: Chart(_recentTransactions),
-                  )
-                : Container(
-                    height: calculateTransactionListHeight,
-                    child:
-                        TransactionList(_userTransactions, _deleteTransaction),
+            if (isLandscape)
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text('Show Chart'),
+                  Switch(
+                    value: _showChart,
+                    onChanged: (value) {
+                      setState(() {
+                        _showChart = value;
+                      });
+                    },
                   ),
+                ],
+              ),
+            if (isPortrait) displayChartWidget,
+            if (isPortrait) displayTxListWidget,
+            if (isLandscape)
+              _showChart ? displayChartWidget : displayTxListWidget,
           ],
         ),
       ),
