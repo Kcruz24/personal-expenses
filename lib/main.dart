@@ -117,12 +117,12 @@ class _MyHomePageState extends State<MyHomePage> {
             trailing: Row(
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
-                GestureDetector(
+                CupertinoButton(
                   child: Icon(
                     CupertinoIcons.add,
                     color: themeContext.textTheme.button.color,
                   ),
-                  onTap: () => _startAddNewTransaction(context),
+                  onPressed: () => _startAddNewTransaction(context),
                 ),
               ],
             ),
