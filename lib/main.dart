@@ -167,7 +167,7 @@ class _MyHomePageState extends State<MyHomePage> {
             if (isLandscape)
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
-                children: [
+                children: <Widget>[
                   Text(
                     'Show Chart',
                     style: themeContext.textTheme.headline6,
