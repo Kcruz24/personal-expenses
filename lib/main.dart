@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -101,6 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
+    final themeContext = Theme.of(context);
 
     double chartHeight = 0.65;
     double txListHeight = 0.7;
@@ -109,15 +111,31 @@ class _MyHomePageState extends State<MyHomePage> {
 
     final isPortrait = mediaQuery.orientation == Orientation.portrait;
 
-    final appBar = AppBar(
-      title: Text('Personal Expenses'),
-      actions: <Widget>[
-        IconButton(
-          icon: Icon(Icons.add),
-          onPressed: () => _startAddNewTransaction(context),
-        ),
-      ],
-    );
+    final PreferredSizeWidget appBar = Platform.isIOS
+        ? CupertinoNavigationBar(
+            middle: Text('Personal Expenses'),
+            trailing: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                CupertinoButton(
+                  child: Icon(
+                    CupertinoIcons.add,
+                    color: themeContext.textTheme.button.color,
+                  ),
+                  onPressed: () => _startAddNewTransaction(context),
+                ),
+              ],
+            ),
+          )
+        : AppBar(
+            title: Text('Personal Expenses'),
+            actions: <Widget>[
+              IconButton(
+                icon: Icon(Icons.add),
+                onPressed: () => _startAddNewTransaction(context),
+              ),
+            ],
+          );
 
     if (isPortrait) chartHeight = 0.3;
 
@@ -141,42 +159,50 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Chart(_recentTransactions),
     );
 
-    return Scaffold(
-      appBar: appBar,
-      body: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: <Widget>[
-            if (isLandscape)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text('Show Chart'),
-                  Switch.adaptive(
-                    activeColor: Theme.of(context).accentColor,
-                    value: _showChart,
-                    onChanged: (value) {
-                      setState(() {
-                        _showChart = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-            if (isPortrait) displayChartWidget,
-            if (isPortrait) displayTxListWidget,
-            if (isLandscape)
-              _showChart ? displayChartWidget : displayTxListWidget,
-          ],
-        ),
-      ),
-      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
-      floatingActionButton: Platform.isIOS
-          ? Container() // Don't render anything.
-          : FloatingActionButton(
-              child: Icon(Icons.add),
-              onPressed: () => _startAddNewTransaction(context),
+    final pageBody = SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.stretch,
+        children: <Widget>[
+          if (isLandscape)
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Text('Show Chart'),
+                Switch.adaptive(
+                  activeColor: Theme.of(context).accentColor,
+                  value: _showChart,
+                  onChanged: (value) {
+                    setState(() {
+                      _showChart = value;
+                    });
+                  },
+                ),
+              ],
             ),
+          if (isPortrait) displayChartWidget,
+          if (isPortrait) displayTxListWidget,
+          if (isLandscape)
+            _showChart ? displayChartWidget : displayTxListWidget,
+        ],
+      ),
     );
+
+    return Platform.isIOS
+        ? CupertinoPageScaffold(
+            child: pageBody,
+            navigationBar: appBar,
+          )
+        : Scaffold(
+            appBar: appBar,
+            body: pageBody,
+            floatingActionButtonLocation:
+                FloatingActionButtonLocation.centerFloat,
+            floatingActionButton: Platform.isIOS
+                ? Container() // Don't render anything.
+                : FloatingActionButton(
+                    child: Icon(Icons.add),
+                    onPressed: () => _startAddNewTransaction(context),
+                  ),
+          );
   }
 }
