@@ -118,6 +118,7 @@ class _MyHomePageState extends State<MyHomePage> {
               mainAxisSize: MainAxisSize.min,
               children: <Widget>[
                 CupertinoButton(
+                  alignment: Alignment.centerRight,
                   child: Icon(
                     CupertinoIcons.add,
                     color: themeContext.textTheme.button.color,
