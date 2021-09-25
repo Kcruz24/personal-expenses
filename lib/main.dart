@@ -110,14 +110,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+
     double chartHeight = 0.65;
     double txListHeight = 0.7;
 
-    final isLandscape =
-        MediaQuery.of(context).orientation == Orientation.landscape;
+    final isLandscape = mediaQuery.orientation == Orientation.landscape;
 
-    final isPortrait =
-        MediaQuery.of(context).orientation == Orientation.portrait;
+    final isPortrait = mediaQuery.orientation == Orientation.portrait;
 
     final appBar = AppBar(
       title: Text('Personal Expenses'),
@@ -131,14 +131,14 @@ class _MyHomePageState extends State<MyHomePage> {
 
     if (isPortrait) chartHeight = 0.3;
 
-    final calculateChartHeight = (MediaQuery.of(context).size.height -
+    final calculateChartHeight = (mediaQuery.size.height -
             appBar.preferredSize.height -
-            MediaQuery.of(context).padding.top) *
+            mediaQuery.padding.top) *
         chartHeight;
 
-    final calculateTransactionListHeight = (MediaQuery.of(context).size.height -
+    final calculateTransactionListHeight = (mediaQuery.size.height -
             appBar.preferredSize.height -
-            MediaQuery.of(context).padding.top) *
+            mediaQuery.padding.top) *
         txListHeight;
 
     final displayTxListWidget = Container(

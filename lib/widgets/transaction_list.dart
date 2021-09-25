@@ -11,13 +11,16 @@ class TransactionList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final mediaQuery = MediaQuery.of(context);
+    final themeContext = Theme.of(context);
+
     return transactions.isEmpty
         ? LayoutBuilder(builder: (context, constraints) {
             return Column(
               children: <Widget>[
                 Text(
                   'No transaction added yet!',
-                  style: Theme.of(context).textTheme.headline6,
+                  style: themeContext.textTheme.headline6,
                 ),
                 SizedBox(
                   height: constraints.maxHeight * .1,
@@ -41,22 +44,22 @@ class TransactionList extends StatelessWidget {
                   leading: SpendingBox(transactions, index),
                   title: Text(
                     transactions[index].title,
-                    style: Theme.of(context).textTheme.headline6,
+                    style: themeContext.textTheme.headline6,
                   ),
                   subtitle: Text(
                     DateFormat.yMMMd().format(transactions[index].date),
                   ),
-                  trailing: MediaQuery.of(context).size.width > 460
+                  trailing: mediaQuery.size.width > 460
                       ? FlatButton.icon(
                           icon: Icon(Icons.delete),
                           label: Text('Delete'),
-                          textColor: Theme.of(context).errorColor,
+                          textColor: themeContext.errorColor,
                           onPressed: () =>
                               _deleteTransaction(transactions[index].id),
                         )
                       : IconButton(
                           icon: Icon(Icons.delete),
-                          color: Theme.of(context).errorColor,
+                          color: themeContext.errorColor,
                           onPressed: () =>
                               _deleteTransaction(transactions[index].id),
                         ),
