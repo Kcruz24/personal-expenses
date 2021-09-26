@@ -110,9 +110,7 @@ class _MyHomePageState extends State<MyHomePage> {
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
     final isPortrait = mediaQuery.orientation == Orientation.portrait;
 
-    final PreferredSizeWidget appBar = Platform.isIOS
-        ? _buildCupertinoAppBar(themeContext, context)
-        : _buildAndroidAppBar(context);
+    final PreferredSizeWidget appBar = _buildAppBar(themeContext, context);
 
     if (isPortrait) chartHeight = 0.3;
 
@@ -200,6 +198,12 @@ class _MyHomePageState extends State<MyHomePage> {
     );
   }
 
+  PreferredSizeWidget _buildAppBar(themeContext, context) {
+    return Platform.isIOS
+        ? _buildCupertinoAppBar(themeContext, context)
+        : _buildAndroidAppBar(context);
+  }
+
   AppBar _buildAndroidAppBar(BuildContext context) {
     return AppBar(
       title: Text('Personal Expenses'),
@@ -213,7 +217,9 @@ class _MyHomePageState extends State<MyHomePage> {
   }
 
   CupertinoNavigationBar _buildCupertinoAppBar(
-      ThemeData themeContext, BuildContext context) {
+    ThemeData themeContext,
+    BuildContext context,
+  ) {
     return CupertinoNavigationBar(
       middle: Text('Personal Expenses'),
       trailing: Row(
