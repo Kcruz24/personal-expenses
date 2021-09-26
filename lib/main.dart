@@ -108,34 +108,11 @@ class _MyHomePageState extends State<MyHomePage> {
     double txListHeight = 0.7;
 
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
-
     final isPortrait = mediaQuery.orientation == Orientation.portrait;
 
     final PreferredSizeWidget appBar = Platform.isIOS
-        ? CupertinoNavigationBar(
-            middle: Text('Personal Expenses'),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                CupertinoButton(
-                  child: Icon(
-                    CupertinoIcons.add,
-                    color: themeContext.textTheme.button.color,
-                  ),
-                  onPressed: () => _startAddNewTransaction(context),
-                ),
-              ],
-            ),
-          )
-        : AppBar(
-            title: Text('Personal Expenses'),
-            actions: <Widget>[
-              IconButton(
-                icon: Icon(Icons.add),
-                onPressed: () => _startAddNewTransaction(context),
-              ),
-            ],
-          );
+        ? _buildCupertinoAppBar(themeContext, context)
+        : _buildAndroidAppBar(context);
 
     if (isPortrait) chartHeight = 0.3;
 
@@ -159,34 +136,24 @@ class _MyHomePageState extends State<MyHomePage> {
       child: Chart(_recentTransactions),
     );
 
+    List<Widget> _buildPortraitContent() {
+      return [displayChartWidget, displayTxListWidget];
+    }
+
+    List<Widget> _buildLandscapeContent() {
+      return [
+        _buildChartSwitch(themeContext),
+        _showChart ? displayChartWidget : displayTxListWidget,
+      ];
+    }
+
     final pageBody = SafeArea(
       child: SingleChildScrollView(
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: <Widget>[
-            if (isLandscape)
-              Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Text(
-                    'Show Chart',
-                    style: themeContext.textTheme.headline6,
-                  ),
-                  Switch.adaptive(
-                    activeColor: themeContext.accentColor,
-                    value: _showChart,
-                    onChanged: (value) {
-                      setState(() {
-                        _showChart = value;
-                      });
-                    },
-                  ),
-                ],
-              ),
-            if (isPortrait) displayChartWidget,
-            if (isPortrait) displayTxListWidget,
-            if (isLandscape)
-              _showChart ? displayChartWidget : displayTxListWidget,
+            if (isPortrait) ..._buildPortraitContent(),
+            if (isLandscape) ..._buildLandscapeContent(),
           ],
         ),
       ),
@@ -209,5 +176,58 @@ class _MyHomePageState extends State<MyHomePage> {
                     onPressed: () => _startAddNewTransaction(context),
                   ),
           );
+  }
+
+  ///////////////////// Builder Methods ////////////////////////////
+  Row _buildChartSwitch(ThemeData themeContext) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: <Widget>[
+        Text(
+          'Show Chart',
+          style: themeContext.textTheme.headline6,
+        ),
+        Switch.adaptive(
+          activeColor: themeContext.accentColor,
+          value: _showChart,
+          onChanged: (value) {
+            setState(() {
+              _showChart = value;
+            });
+          },
+        ),
+      ],
+    );
+  }
+
+  AppBar _buildAndroidAppBar(BuildContext context) {
+    return AppBar(
+      title: Text('Personal Expenses'),
+      actions: <Widget>[
+        IconButton(
+          icon: Icon(Icons.add),
+          onPressed: () => _startAddNewTransaction(context),
+        ),
+      ],
+    );
+  }
+
+  CupertinoNavigationBar _buildCupertinoAppBar(
+      ThemeData themeContext, BuildContext context) {
+    return CupertinoNavigationBar(
+      middle: Text('Personal Expenses'),
+      trailing: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          CupertinoButton(
+            child: Icon(
+              CupertinoIcons.add,
+              color: themeContext.textTheme.button.color,
+            ),
+            onPressed: () => _startAddNewTransaction(context),
+          ),
+        ],
+      ),
+    );
   }
 }
